@@ -3,8 +3,10 @@ package main
 import "github.com/wid-la/pitcher-go"
 
 func main() {
-	vtURL := "https://api.versatile.la"
+	vtURL := "https://api.test.org"
 	c := pitcher.NewClient(vtURL)
+	c.Signin("name@test.org", "password")
 
-	c.Signin("", "")
+	session := c.CurrentSession()
+	println("Token: ", session.Token)
 }

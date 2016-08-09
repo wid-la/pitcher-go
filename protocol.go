@@ -31,5 +31,17 @@ type Session struct {
 	// Policies []string  `json:"policies,omitempty"`
 }
 
-func temp() {
+// Data .
+type Data struct {
+	ID        string `json:"_key"`
+	Name      string `json:"name"`
+	Type      string `json:"type"`
+	LastValue string `json:"lastValue"`
+}
+
+// ErrorResponse .
+type ErrorResponse struct {
+	Status      int    `json:"status"`
+	Description string `json:"description"`
+	ErrorCode   string `json:"errorCode"`
 }
