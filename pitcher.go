@@ -3,6 +3,7 @@ package pitcher
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 )
 
 // Pitcher represents connection to Versatile API.
@@ -12,6 +13,7 @@ type Pitcher interface {
 	Signin(email string, password string) error
 	CurrentSession() *Session
 	GetData() []Data
+	PublishData(Data, interface{})
 }
 
 type pitcher struct {
@@ -48,9 +50,25 @@ func (c *pitcher) GetURL() string {
 }
 
 func (c *pitcher) GetData() []Data {
-	// res := make([]Data, 0)
-	var res []Data
+	o, err := c.conn.Get("data")
+	if err != nil {
+		return nil
+	}
+	res := []Data{}
+	r := bytes.NewReader(o)
+	json.NewDecoder(r).Decode(&res)
 	return res
+}
+
+func (c *pitcher) PublishData(d Data, o interface{}) {
+	// data/{key}/publish
+	req := &DataPublishRequest{}
+	req.Value = o
+	path := fmt.Sprintf("data/%s/publish", d.ID)
+	_, err := c.conn.Post(path, req)
+	if err != nil {
+		fmt.Println("Error Publish")
+	}
 }
 
 // NewClient .

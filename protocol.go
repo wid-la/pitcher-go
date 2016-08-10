@@ -39,6 +39,11 @@ type Data struct {
 	LastValue string `json:"lastValue"`
 }
 
+// DataPublishRequest .
+type DataPublishRequest struct {
+	Value interface{} `json:"value"`
+}
+
 // ErrorResponse .
 type ErrorResponse struct {
 	Status      int    `json:"status"`
