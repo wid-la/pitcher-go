@@ -12,7 +12,7 @@ type Pitcher interface {
 	GetURL() string
 	Signin(email string, password string) error
 	CurrentSession() *Session
-	GetData() []Data
+	GetData() ([]Data, *ErrorResponse)
 	PublishData(Data, interface{})
 }
 
@@ -23,8 +23,11 @@ type pitcher struct {
 
 func (c *pitcher) Signin(email string, password string) error {
 	req := &SigninRequest{Email: email, Password: password}
+	println("Request: ", req)
 	o, err := c.conn.Post("users/signin", req)
+	println("/POST: ", o)
 	if err != nil {
+		println("ERROR: ", err)
 		return nil
 	}
 	res := &Session{}
@@ -49,15 +52,17 @@ func (c *pitcher) GetURL() string {
 	return c.URL
 }
 
-func (c *pitcher) GetData() []Data {
+func (c *pitcher) GetData() ([]Data, *ErrorResponse) {
 	o, err := c.conn.Get("data")
 	if err != nil {
-		return nil
+		fmt.Println(err)
+		fmt.Println(err.ErrorCode)
+		return nil, err
 	}
 	res := []Data{}
 	r := bytes.NewReader(o)
 	json.NewDecoder(r).Decode(&res)
-	return res
+	return res, nil
 }
 
 func (c *pitcher) PublishData(d Data, o interface{}) {
